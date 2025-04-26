@@ -13,6 +13,7 @@ const ClienteForm: React.FC = () => {
   const [planoContratado, setPlanoContratado] = useState('');
   const [vigenciaPlano, setVigenciaPlano] = useState('');
   const [inicioPlano, setInicioPlano] = useState('');
+  const [vencimento, setVencimento] = useState('');
   const [contribuicao, setContribuicao] = useState('');
   
   const handleSubmit = (e: React.FormEvent) => {
@@ -27,6 +28,7 @@ const ClienteForm: React.FC = () => {
       planoContratado,
       vigenciaPlano,
       inicioPlano,
+      vencimento,
       contribuicao: parseFloat(contribuicao) || 0
     });
     
@@ -34,6 +36,7 @@ const ClienteForm: React.FC = () => {
     setPlanoContratado('');
     setVigenciaPlano('');
     setInicioPlano('');
+    setVencimento('');
     setContribuicao('');
   };
 
@@ -108,6 +111,17 @@ const ClienteForm: React.FC = () => {
                 placeholder="mm/aaaa"
                 maxLength={7}
                 required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="vencimento">Vencimento</Label>
+              <Input
+                id="vencimento"
+                type="text"
+                value={vencimento}
+                onChange={(e) => setVencimento(e.target.value)}
+                placeholder="Informe o vencimento"
               />
             </div>
 

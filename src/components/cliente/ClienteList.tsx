@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAppContext } from '@/contexts/AppContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,7 +14,7 @@ interface NotesState {
 
 const ClienteList: React.FC = () => {
   const { clientes, excluirCliente, investimentos } = useAppContext();
-  const [notes, setNotes] = useState<NotesState>({});
+  const [notes, setNotes] = useState<NotesState>({}); 
   const [openDialogId, setOpenDialogId] = useState<string | null>(null);
 
   const handleNotesChange = (clienteId: string, value: string) => {
@@ -60,6 +59,7 @@ const ClienteList: React.FC = () => {
                 <TableHead>Plano Contratado</TableHead>
                 <TableHead>Vigência</TableHead>
                 <TableHead>Início do Plano</TableHead>
+                <TableHead>Vencimento</TableHead>
                 <TableHead>Contribuição Inicial</TableHead>
                 <TableHead>Valor Total Aplicado</TableHead>
                 <TableHead>Patrimônio Projetado</TableHead>
@@ -75,6 +75,7 @@ const ClienteList: React.FC = () => {
                     <TableCell className="whitespace-nowrap">{cliente.planoContratado}</TableCell>
                     <TableCell className="whitespace-nowrap">{cliente.vigenciaPlano}</TableCell>
                     <TableCell className="whitespace-nowrap">{cliente.inicioPlano ?? '-'}</TableCell>
+                    <TableCell className="whitespace-nowrap">{cliente.vencimento ?? '-'}</TableCell>
                     <TableCell className="whitespace-nowrap">{formatCurrency(cliente.contribuicao)}</TableCell>
                     <TableCell className="whitespace-nowrap">{formatCurrency(valorAplicado)}</TableCell>
                     <TableCell className="whitespace-nowrap">{formatCurrency(patrimonioProjetado)}</TableCell>
@@ -126,4 +127,3 @@ const ClienteList: React.FC = () => {
 };
 
 export default ClienteList;
-

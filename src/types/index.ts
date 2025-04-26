@@ -4,6 +4,7 @@ export interface Cliente {
   planoContratado: string;
   vigenciaPlano: string;
   inicioPlano?: string;
+  vencimento?: string;
   contribuicao: number;
 }
 
