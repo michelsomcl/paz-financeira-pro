@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -34,12 +33,12 @@ const Header: React.FC = () => {
                     <Menu size={24} />
                   </Button>
                 </DrawerTrigger>
-                <DrawerContent className="h-[80vh]">
+                <DrawerContent className="h-[80vh] bg-white">
                   <div className="p-4">
                     <div className="flex justify-end mb-4">
                       <DrawerClose asChild>
                         <Button variant="ghost" size="icon">
-                          <X className="h-6 w-6" />
+                          <X className="h-6 w-6 text-dourado" />
                         </Button>
                       </DrawerClose>
                     </div>
@@ -47,7 +46,7 @@ const Header: React.FC = () => {
                       <NavItem to="/" icon={<Home size={18} />} text="Dashboard" onClick={() => setIsOpen(false)} />
                       <NavItem to="/clientes" icon={<Users size={18} />} text="Clientes" onClick={() => setIsOpen(false)} />
                       <NavItem to="/investimentos/novo" icon={<Plus size={18} />} text="Novo Investimento" onClick={() => setIsOpen(false)} />
-                      <NavItem to="/investimentos" icon={<BarChart3 size={18} />} text="Investimentos" end onClick={() => setIsOpen(false)} />
+                      <NavItem to="/investimentos" icon={<BarChart3 size={18} />} text="Investimentos" onClick={() => setIsOpen(false)} />
                     </nav>
                   </div>
                 </DrawerContent>
@@ -72,11 +71,11 @@ interface NavItemProps {
   to: string;
   icon: React.ReactNode;
   text: string;
-  end?: boolean;
   onClick?: () => void;
+  end?: boolean;
 }
 
-const NavItem: React.FC<NavItemProps> = ({ to, icon, text, end, onClick }) => {
+const NavItem: React.FC<NavItemProps> = ({ to, icon, text, onClick, end }) => {
   return (
     <NavLink
       to={to}
@@ -85,8 +84,8 @@ const NavItem: React.FC<NavItemProps> = ({ to, icon, text, end, onClick }) => {
       className={({ isActive }) => cn(
         "flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors",
         isActive
-          ? "bg-white text-dourado-dark"
-          : "text-white hover:bg-white/20"
+          ? "bg-dourado text-white"
+          : "bg-gray-100 text-gray-800 hover:bg-dourado/10"
       )}
     >
       <span className="mr-2">{icon}</span>
@@ -96,4 +95,3 @@ const NavItem: React.FC<NavItemProps> = ({ to, icon, text, end, onClick }) => {
 };
 
 export default Header;
-
