@@ -1,8 +1,6 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency } from '@/utils/formatters';
-
 interface StatisticsCardsProps {
   totalClientes: number;
   totalInvestimentos: number;
@@ -10,16 +8,14 @@ interface StatisticsCardsProps {
   rendimentoTotalLiquido: number;
   patrimonioLiquido: number;
 }
-
 export const StatisticsCards: React.FC<StatisticsCardsProps> = ({
   totalClientes,
   totalInvestimentos,
   valorTotalInvestido,
   rendimentoTotalLiquido,
-  patrimonioLiquido,
+  patrimonioLiquido
 }) => {
-  return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
+  return <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
       <Card className="col-span-1 animate-fade-in">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -66,14 +62,11 @@ export const StatisticsCards: React.FC<StatisticsCardsProps> = ({
 
       <Card className="col-span-1 animate-fade-in bg-[linear-gradient(135deg,#E5DEFF_80%,#9b87f5_100%)] border-0 shadow-lg">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-[var(--purple-700,#6E59A5)]">
-            Patrimônio Líquido
-          </CardTitle>
+          <CardTitle className="text-sm font-medium text-[var(--purple-700,#6E59A5)]">Patrimônio Líquido Projetado</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-[var(--purple-800,#403E43)]">{formatCurrency(patrimonioLiquido)}</div>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 };
