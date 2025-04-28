@@ -47,7 +47,7 @@ export function useInvestimentoOperations(
       };
       
       try {
-        const calculo = calcularRentabilidade(novoInvestimento);
+        const calculo = safeCalculoRentabilidade(novoInvestimento);
         const novoInvestimentoComCalculo = { ...novoInvestimento, calculo };
         const novosInvestimentos = [...investimentos, novoInvestimentoComCalculo];
         
