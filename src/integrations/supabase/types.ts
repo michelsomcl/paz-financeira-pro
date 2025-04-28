@@ -9,7 +9,98 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      clientes: {
+        Row: {
+          contribuicao: number
+          id: string
+          inicioplano: string | null
+          nome: string
+          planocontratado: string
+          vencimento: string | null
+          vigenciaplano: string
+        }
+        Insert: {
+          contribuicao: number
+          id: string
+          inicioplano?: string | null
+          nome: string
+          planocontratado: string
+          vencimento?: string | null
+          vigenciaplano: string
+        }
+        Update: {
+          contribuicao?: number
+          id?: string
+          inicioplano?: string | null
+          nome?: string
+          planocontratado?: string
+          vencimento?: string | null
+          vigenciaplano?: string
+        }
+        Relationships: []
+      }
+      investimentos: {
+        Row: {
+          clienteid: string
+          clientenome: string
+          dataaporte: string
+          datavencimento: string
+          id: string
+          ipcaatual: number
+          modalidade: string
+          planocontratado: string
+          selicatual: number
+          taxaipca: number | null
+          taxaposcdi: number | null
+          taxaprefixado: number | null
+          tipoinvestimento: string
+          titulo: string | null
+          valoraporte: number
+        }
+        Insert: {
+          clienteid: string
+          clientenome: string
+          dataaporte: string
+          datavencimento: string
+          id: string
+          ipcaatual: number
+          modalidade: string
+          planocontratado: string
+          selicatual: number
+          taxaipca?: number | null
+          taxaposcdi?: number | null
+          taxaprefixado?: number | null
+          tipoinvestimento: string
+          titulo?: string | null
+          valoraporte: number
+        }
+        Update: {
+          clienteid?: string
+          clientenome?: string
+          dataaporte?: string
+          datavencimento?: string
+          id?: string
+          ipcaatual?: number
+          modalidade?: string
+          planocontratado?: string
+          selicatual?: number
+          taxaipca?: number | null
+          taxaposcdi?: number | null
+          taxaprefixado?: number | null
+          tipoinvestimento?: string
+          titulo?: string | null
+          valoraporte?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investimentos_clienteid_fkey"
+            columns: ["clienteid"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

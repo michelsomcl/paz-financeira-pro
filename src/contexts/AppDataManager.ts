@@ -1,12 +1,46 @@
-
 import { calcularRentabilidade } from "@/utils/calculadora";
 import { toast } from "@/hooks/use-toast";
 import { Cliente, Investimento, InvestimentoComCalculo } from "@/types";
 import { parseDateString } from "@/utils/formatters";
+import { supabase } from "@/integrations/supabase/client";
 
 export const carregarDadosSupabase = async () => {
-  // Agora carrega apenas do localStorage
-  return carregarDadosLocalStorage();
+  try {
+    // Carregar clientes do Supabase
+    const { data: clientesData, error: clientesError } = await supabase
+      .from('clientes')
+      .select('*');
+
+    if (clientesError) {
+      console.error("Erro ao carregar clientes do Supabase:", clientesError);
+      throw clientesError;
+    }
+
+    // Carregar investimentos do Supabase
+    const { data: investimentosData, error: investimentosError } = await supabase
+      .from('investimentos')
+      .select('*');
+
+    if (investimentosError) {
+      console.error("Erro ao carregar investimentos do Supabase:", investimentosError);
+      throw investimentosError;
+    }
+
+    // Processar investimentos para adicionar cálculos
+    const investimentosComCalculo: InvestimentoComCalculo[] = investimentosData.map((inv: Investimento) => ({
+      ...inv,
+      calculo: safeCalculoRentabilidade(inv)
+    }));
+
+    return { 
+      clientes: clientesData as Cliente[], 
+      investimentos: investimentosComCalculo 
+    };
+  } catch (e) {
+    console.error("Erro ao carregar dados do Supabase:", e);
+    // Fallback para localStorage em caso de erro
+    return carregarDadosLocalStorage();
+  }
 };
 
 export const carregarDadosLocalStorage = () => {
@@ -38,10 +72,21 @@ export const carregarDadosLocalStorage = () => {
   return { clientes, investimentos };
 };
 
-export const salvarCliente = async (_supabase: any, clientes: Cliente[], cliente: Cliente) => {
+export const salvarCliente = async (supabaseClient: typeof supabase, clientes: Cliente[], cliente: Cliente) => {
   try {
+    // Salvar no Supabase
+    const { error } = await supabaseClient
+      .from('clientes')
+      .upsert([cliente], { onConflict: 'id' });
+    
+    if (error) {
+      console.error("Erro ao salvar cliente no Supabase:", error);
+      throw error;
+    }
+    
+    // Backup no localStorage
     localStorage.setItem("paz-financeira-clientes", JSON.stringify(clientes));
-    console.log("Cliente salvo no localStorage:", cliente);
+    console.log("Cliente salvo no Supabase e localStorage:", cliente);
     
     toast({
       title: "Cliente salvo",
@@ -58,11 +103,22 @@ export const salvarCliente = async (_supabase: any, clientes: Cliente[], cliente
   }
 };
 
-export const salvarInvestimento = async (_supabase: any, investimentos: InvestimentoComCalculo[], investimento: Investimento) => {
+export const salvarInvestimento = async (supabaseClient: typeof supabase, investimentos: InvestimentoComCalculo[], investimento: Investimento) => {
   try {
+    // Remover o campo calculo antes de salvar no Supabase
+    const { error } = await supabaseClient
+      .from('investimentos')
+      .upsert([investimento], { onConflict: 'id' });
+    
+    if (error) {
+      console.error("Erro ao salvar investimento no Supabase:", error);
+      throw error;
+    }
+    
+    // Backup no localStorage
     const investimentosSemCalculo = investimentos.map(({ calculo, ...rest }) => rest);
     localStorage.setItem("paz-financeira-investimentos", JSON.stringify(investimentosSemCalculo));
-    console.log("Investimento salvo no localStorage:", investimento);
+    console.log("Investimento salvo no Supabase e localStorage:", investimento);
     
     toast({
       title: "Investimento salvo",

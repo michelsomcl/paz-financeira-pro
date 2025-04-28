@@ -1,12 +1,13 @@
 
 import { Cliente } from '@/types';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from "@/integrations/supabase/client";
 
-export const processarDadosImportacao = (dados: any[], clientes: Cliente[], adicionarInvestimento: Function) => {
+export const processarDadosImportacao = async (dados: any[], clientes: Cliente[], adicionarInvestimento: Function) => {
   let sucessos = 0;
   let falhas = 0;
 
-  dados.forEach(item => {
+  for (const item of dados) {
     try {
       const clienteId = item['Cliente ID'];
       if (!clienteId) {
@@ -33,13 +34,13 @@ export const processarDadosImportacao = (dados: any[], clientes: Cliente[], adic
         taxaIPCA: item['Taxa IPCA'] ? parseFloat(item['Taxa IPCA']) : undefined
       };
 
-      adicionarInvestimento(investimento);
+      await adicionarInvestimento(investimento);
       sucessos++;
     } catch (error) {
       console.error("Erro ao processar item:", error, item);
       falhas++;
     }
-  });
+  }
 
   toast({
     title: "Importação concluída",
@@ -49,4 +50,3 @@ export const processarDadosImportacao = (dados: any[], clientes: Cliente[], adic
 
   return { sucessos, falhas };
 };
-

@@ -1,4 +1,3 @@
-
 import * as XLSX from 'xlsx';
 import { InvestimentoComCalculo } from '@/types';
 import { formatarDescricaoTaxa } from '@/utils/calculadora';
@@ -10,7 +9,7 @@ export const exportarInvestimentosParaExcel = (investimentos: InvestimentoComCal
     'Cliente': inv.clienteNome,
     'Tipo': inv.tipoInvestimento,
     'Modalidade': inv.modalidade,
-    'Título': inv.titulo || '', // Add the Título column
+    'Título': inv.titulo || '', 
     'Valor do Aporte': inv.valorAporte,
     'Data do Aporte': inv.dataAporte,
     'Data do Vencimento': inv.dataVencimento,
@@ -83,4 +82,3 @@ export const baixarTemplateExcel = () => {
     description: "O template de importação foi baixado com sucesso.",
   });
 };
-

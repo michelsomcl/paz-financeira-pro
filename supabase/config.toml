@@ -1,1 +1,9 @@
+
 project_id = "bvejlxgckjjyucvoojps"
+
+[realtime]
+enabled = true
+[realtime.clientes]
+enabled = true
+[realtime.investimentos]
+enabled = true
