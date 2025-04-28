@@ -1,11 +1,11 @@
 
 import { v4 as uuidv4 } from "uuid";
-import { calcularRentabilidade } from "@/utils/calculadora";
 import { Investimento, InvestimentoComCalculo } from "@/types";
 import { toast } from "@/hooks/use-toast";
-import { salvarInvestimento } from "@/contexts/AppDataManager";
+import { salvarInvestimento } from "@/services/investimentoOperations";
 import { supabase } from "@/integrations/supabase/client";
 import { validateInvestmentData } from "@/utils/formatters";
+import { safeCalculoRentabilidade } from "@/utils/mapperFunctions";
 
 export function useInvestimentoOperations(
   investimentos: InvestimentoComCalculo[],

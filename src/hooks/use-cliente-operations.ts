@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { Cliente } from "@/types";
 import { toast } from "@/hooks/use-toast";
-import { salvarCliente } from "@/contexts/AppDataManager";
+import { salvarCliente } from "@/services/clienteOperations";
 import { supabase } from "@/integrations/supabase/client";
 
 export function useClienteOperations(

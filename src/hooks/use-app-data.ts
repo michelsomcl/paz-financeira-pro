@@ -1,7 +1,7 @@
 
 import { useState, useCallback } from "react";
 import { Cliente, InvestimentoComCalculo } from "@/types";
-import { carregarDadosSupabase, carregarDadosLocalStorage } from "@/contexts/AppDataManager";
+import { carregarDadosSupabase, carregarDadosLocalStorage } from "@/services/dataLoaders";
 import { toast } from "@/hooks/use-toast";
 
 export function useAppData() {
