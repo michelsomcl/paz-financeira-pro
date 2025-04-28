@@ -29,7 +29,7 @@ export const StatisticsCards: React.FC<StatisticsCardsProps> = ({
       
       <Card className="col-span-1 animate-fade-in">
         <CardHeader className="pb-2">
-          <CardTitle className="font-medium text-muted-foreground text-sm">Total de Investimentos (filtro)</CardTitle>
+          <CardTitle className="font-medium text-muted-foreground text-sm">Total de Investimentos (clientes selecionados)</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{totalInvestimentos}</div>
