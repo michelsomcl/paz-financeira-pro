@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAppContext } from '@/contexts/AppContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -23,10 +22,8 @@ const InvestimentoList: React.FC = () => {
   const [investimentoSelecionado, setInvestimentoSelecionado] = useState<InvestimentoComCalculo | null>(null);
   const [isLoadingData, setIsLoadingData] = useState(false);
   
-  // Refresh data on component mount without causing flicker
   useEffect(() => {
     if (investimentos.length > 0) {
-      // Data is already loaded, no need for refresh
       return;
     }
     
@@ -37,11 +34,9 @@ const InvestimentoList: React.FC = () => {
     try {
       setIsLoadingData(true);
       
-      // Trigger data refresh through custom event
       const evento = new CustomEvent("refresh-data");
       window.dispatchEvent(evento);
       
-      // Set a timeout to ensure we give the refresh event time to process
       setTimeout(() => {
         setIsLoadingData(false);
       }, 800);
@@ -57,12 +52,10 @@ const InvestimentoList: React.FC = () => {
   };
   
   const handleImportData = (data: any[]) => {
-    // Após a importação bem-sucedida, atualize a lista
     refreshData();
   };
   
   const investimentosFiltrados = investimentos.filter(inv => {
-    // Ensure inv is valid before filtering
     if (!inv) return false;
     
     const matchCliente = !filtroCliente || inv.clienteId === filtroCliente;
@@ -117,7 +110,7 @@ const InvestimentoList: React.FC = () => {
       />
       
       <Card className="animate-fade-in">
-        <CardHeader className={`flex ${isMobile ? "flex-col" : "flex-row"} items-center justify-between`}>
+        <CardHeader className={`flex ${isMobile ? "flex-col" : "flex-row"} items-center justify-between sticky top-0 z-10 bg-white`}>
           <div>
             <CardTitle>Investimentos Cadastrados</CardTitle>
             <CardDescription>
@@ -132,14 +125,12 @@ const InvestimentoList: React.FC = () => {
           </div>
         </CardHeader>
         
-        <CardContent className="p-0 sm:p-6">
-          <div className="overflow-x-auto w-full">
-            <InvestimentoTable 
-              investimentos={investimentosFiltrados}
-              onDelete={excluirInvestimento}
-              onShowDetails={exibirDetalhes}
-            />
-          </div>
+        <CardContent className="p-0 sm:p-6 overflow-hidden">
+          <InvestimentoTable 
+            investimentos={investimentosFiltrados}
+            onDelete={excluirInvestimento}
+            onShowDetails={exibirDetalhes}
+          />
         </CardContent>
       </Card>
       

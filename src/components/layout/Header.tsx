@@ -86,7 +86,7 @@ const NavItem: React.FC<NavItemProps> = ({ to, icon, text, onClick, end }) => {
         "flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors",
         isActive
           ? "bg-white text-dourado" // Active state is white background with dourado text (already inverted as requested)
-          : "text-gray-800 hover:bg-dourado/10" // Non-active has subtle hover effect
+          : "text-white hover:bg-dourado/10" // Non-active has subtle hover effect
       )}
     >
       <span className="mr-2">{icon}</span>
