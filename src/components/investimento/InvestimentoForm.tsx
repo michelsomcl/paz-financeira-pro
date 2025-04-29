@@ -12,6 +12,11 @@ import { toast } from '@/hooks/use-toast';
 const InvestimentoForm: React.FC = () => {
   const { clientes, adicionarInvestimento } = useAppContext();
   
+  // Sort clients alphabetically by name
+  const clientesOrdenados = [...clientes].sort((a, b) => 
+    a.nome.localeCompare(b.nome)
+  );
+  
   const [clienteId, setClienteId] = useState('');
   const [tipoInvestimento, setTipoInvestimento] = useState<TipoInvestimento>('CDB');
   const [modalidade, setModalidade] = useState<Modalidade>('Pré Fixado');
@@ -214,7 +219,7 @@ const InvestimentoForm: React.FC = () => {
                   <SelectValue placeholder="Selecione um cliente" />
                 </SelectTrigger>
                 <SelectContent>
-                  {clientes.map((cliente) => (
+                  {clientesOrdenados.map((cliente) => (
                     <SelectItem key={cliente.id} value={cliente.id}>
                       {cliente.nome}
                     </SelectItem>

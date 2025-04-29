@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -84,8 +85,8 @@ const NavItem: React.FC<NavItemProps> = ({ to, icon, text, onClick, end }) => {
       className={({ isActive }) => cn(
         "flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors",
         isActive
-          ? "bg-dourado text-white"
-          : "bg-gray-100 text-gray-800 hover:bg-dourado/10"
+          ? "bg-white text-dourado" // Inverted: active is white background with dourado text
+          : "bg-gray-100 text-gray-800 hover:bg-dourado/10" // Non-active remains similar with slight hover change
       )}
     >
       <span className="mr-2">{icon}</span>
