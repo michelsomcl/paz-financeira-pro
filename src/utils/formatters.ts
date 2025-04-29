@@ -101,14 +101,20 @@ export const parseDateString = (dateStr: string): Date | null => {
   return date;
 };
 
-// Format percentage values
+// Format percentage values - FIXED: now ensures values are displayed correctly
 export const formatPercentage = (value: number | undefined | null): string => {
   if (value === undefined || value === null) {
     return '0,00%';
   }
   
-  // Convert decimal to percentage (e.g., 0.0545 -> 5.45%)
-  return value.toLocaleString('pt-BR', {
+  // Fix for percentage values: Ensure value is in decimal form before formatting
+  // For example, if value is 12.73, it should be displayed as 12,73%
+  // If value is 0.1273, it will also be displayed as 12,73%
+  
+  // If value is greater than 1, assume it's already in percentage form (e.g. 12.73%)
+  const valueToFormat = value > 1 ? value / 100 : value;
+  
+  return valueToFormat.toLocaleString('pt-BR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
     style: 'percent'
@@ -165,3 +171,4 @@ export const validateInvestmentData = (
   
   return null; // Validation passed
 };
+
