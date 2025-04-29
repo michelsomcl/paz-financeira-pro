@@ -15,7 +15,7 @@ const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-10 bg-gradient-to-r from-dourado to-dourado-light shadow-md">
+    <header className="sticky top-0 z-20 bg-gradient-to-r from-dourado to-dourado-light shadow-md">
       <div className="container mx-auto px-4 py-3">
         <div className="flex flex-col md:flex-row md:items-center justify-between">
           <div className="flex items-center justify-between mb-4 md:mb-0">
@@ -85,8 +85,8 @@ const NavItem: React.FC<NavItemProps> = ({ to, icon, text, onClick, end }) => {
       className={({ isActive }) => cn(
         "flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors",
         isActive
-          ? "bg-white text-dourado" // Active state is white background with dourado text (already inverted as requested)
-          : "text-white hover:bg-dourado/10" // Non-active has subtle hover effect
+          ? "bg-white text-dourado" // Active state is white background with dourado text
+          : "text-gray-800 hover:bg-dourado/10" // Non-active has subtle hover effect
       )}
     >
       <span className="mr-2">{icon}</span>
