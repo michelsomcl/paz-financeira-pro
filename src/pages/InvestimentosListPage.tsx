@@ -17,7 +17,7 @@ const InvestimentosListPage: React.FC = () => {
     // Short timeout to ensure stable rendering
     const loadingTimeout = setTimeout(() => {
       setIsLoading(false);
-    }, 300);
+    }, 600); // Slightly increased timeout to reduce flicker chance
     
     return () => clearTimeout(loadingTimeout);
   }, [investimentos]);
