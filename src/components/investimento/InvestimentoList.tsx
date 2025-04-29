@@ -9,6 +9,7 @@ import InvestimentoExport from './InvestimentoExport';
 import InvestimentoDetalhes from './InvestimentoDetalhes';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { toast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const InvestimentoList: React.FC = () => {
   const { investimentos, excluirInvestimento, clientes } = useAppContext();
@@ -22,10 +23,15 @@ const InvestimentoList: React.FC = () => {
   const [investimentoSelecionado, setInvestimentoSelecionado] = useState<InvestimentoComCalculo | null>(null);
   const [isLoadingData, setIsLoadingData] = useState(false);
   
-  // Refresh data on component mount
+  // Refresh data on component mount without causing flicker
   useEffect(() => {
+    if (investimentos.length > 0) {
+      // Data is already loaded, no need for refresh
+      return;
+    }
+    
     refreshData();
-  }, []);
+  }, [investimentos]);
   
   const refreshData = async () => {
     try {
@@ -38,7 +44,7 @@ const InvestimentoList: React.FC = () => {
       // Set a timeout to ensure we give the refresh event time to process
       setTimeout(() => {
         setIsLoadingData(false);
-      }, 1000);
+      }, 800);
     } catch (error) {
       console.error("Error refreshing investments:", error);
       setIsLoadingData(false);
@@ -73,15 +79,22 @@ const InvestimentoList: React.FC = () => {
   if (isLoadingData) {
     return (
       <Card className="animate-fade-in">
-        <CardContent className="p-6 text-center">
-          <p className="text-gray-500">Carregando investimentos...</p>
-          <div className="mx-auto mt-4 w-8 h-8 border-2 border-gray-300 border-t-dourado rounded-full animate-spin"></div>
+        <CardHeader>
+          <CardTitle>Investimentos Cadastrados</CardTitle>
+          <CardDescription>Carregando dados...</CardDescription>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-[400px] w-full" />
+          </div>
         </CardContent>
       </Card>
     );
   }
   
-  if (investimentos.length === 0) {
+  if (!Array.isArray(investimentos) || investimentos.length === 0) {
     return (
       <Card className="animate-fade-in">
         <CardContent className="p-6 text-center">
@@ -120,7 +133,6 @@ const InvestimentoList: React.FC = () => {
         </CardHeader>
         
         <CardContent className="p-0 sm:p-6">
-          {/* Forçar overflow-x para tabela horizontal sem quebra */}
           <div className="overflow-x-auto w-full">
             <InvestimentoTable 
               investimentos={investimentosFiltrados}
