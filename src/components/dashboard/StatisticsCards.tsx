@@ -18,9 +18,7 @@ export const StatisticsCards: React.FC<StatisticsCardsProps> = ({
   return <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
       <Card className="col-span-1 animate-fade-in">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            Total de Clientes
-          </CardTitle>
+          <CardTitle className="text-sm font-medium text-muted-foreground">Total de Clientes (cadastrados)</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{totalClientes}</div>
@@ -29,7 +27,7 @@ export const StatisticsCards: React.FC<StatisticsCardsProps> = ({
       
       <Card className="col-span-1 animate-fade-in">
         <CardHeader className="pb-2">
-          <CardTitle className="font-medium text-muted-foreground text-sm">Total de Investimentos (clientes selecionados)</CardTitle>
+          <CardTitle className="font-medium text-muted-foreground text-sm">Total de Investimentos</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{totalInvestimentos}</div>
