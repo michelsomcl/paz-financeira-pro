@@ -11,6 +11,10 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { toast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 
+// Define sorting types
+type SortField = string | null;
+type SortDirection = 'asc' | 'desc' | null;
+
 const InvestimentoList: React.FC = () => {
   const { investimentos, excluirInvestimento, clientes } = useAppContext();
   const isMobile = useIsMobile();
@@ -18,6 +22,10 @@ const InvestimentoList: React.FC = () => {
   const [filtroCliente, setFiltroCliente] = useState<string | null>(null);
   const [filtroTipo, setFiltroTipo] = useState<string | null>(null);
   const [filtroModalidade, setFiltroModalidade] = useState<string | null>(null);
+  
+  // Add sorting state
+  const [sortField, setSortField] = useState<SortField>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
   
   const [detalhesVisible, setDetalhesVisible] = useState(false);
   const [investimentoSelecionado, setInvestimentoSelecionado] = useState<InvestimentoComCalculo | null>(null);
@@ -61,7 +69,28 @@ const InvestimentoList: React.FC = () => {
     refreshData();
   };
   
-  const investimentosFiltrados = investimentos.filter(inv => {
+  // Handle sorting logic
+  const handleSort = (field: string) => {
+    // If clicking the same field, toggle sort direction or reset
+    if (field === sortField) {
+      if (sortDirection === 'asc') {
+        setSortDirection('desc');
+      } else if (sortDirection === 'desc') {
+        // Reset sorting
+        setSortField(null);
+        setSortDirection(null);
+      } else {
+        setSortDirection('asc');
+      }
+    } else {
+      // New field selected, start with ascending sort
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+  
+  // Filter investments
+  let investimentosFiltrados = investimentos.filter(inv => {
     // Ensure inv is valid before filtering
     if (!inv) return false;
     
@@ -70,6 +99,40 @@ const InvestimentoList: React.FC = () => {
     const matchModalidade = !filtroModalidade || inv.modalidade === filtroModalidade;
     return matchCliente && matchTipo && matchModalidade;
   });
+  
+  // Sort investments
+  if (sortField && sortDirection) {
+    investimentosFiltrados = [...investimentosFiltrados].sort((a, b) => {
+      // Helper function to safely get comparable values
+      const getValue = (obj: any, path: string) => {
+        const parts = path.split('.');
+        let value = obj;
+        
+        for (const part of parts) {
+          if (value === null || value === undefined) return '';
+          value = value[part];
+        }
+        
+        // Convert to number if possible for numerical sorting
+        if (typeof value === 'number') return value;
+        if (typeof value === 'string') {
+          const num = parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.'));
+          if (!isNaN(num)) return num;
+          return value.toLowerCase(); // Case-insensitive string comparison
+        }
+        
+        return value || '';
+      };
+      
+      let valueA = getValue(a, sortField);
+      let valueB = getValue(b, sortField);
+      
+      if (valueA === valueB) return 0;
+      
+      const comparison = valueA < valueB ? -1 : 1;
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }
   
   const exibirDetalhes = (investimento: InvestimentoComCalculo) => {
     setInvestimentoSelecionado(investimento);
@@ -138,6 +201,9 @@ const InvestimentoList: React.FC = () => {
               investimentos={investimentosFiltrados}
               onDelete={excluirInvestimento}
               onShowDetails={exibirDetalhes}
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSort={handleSort}
             />
           </div>
         </CardContent>
