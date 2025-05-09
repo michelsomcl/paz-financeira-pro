@@ -7,14 +7,11 @@ import InvestimentoFilters from './InvestimentoFilters';
 import InvestimentoTable from './InvestimentoTable';
 import InvestimentoExport from './InvestimentoExport';
 import InvestimentoDetalhes from './InvestimentoDetalhes';
+import InvestimentoLoading from './InvestimentoLoading';
+import InvestimentoEmpty from './InvestimentoEmpty';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { toast } from '@/hooks/use-toast';
-import { Skeleton } from '@/components/ui/skeleton';
-import { parseDateString } from '@/utils/formatters';
-
-// Define sorting types
-type SortField = string | null;
-type SortDirection = 'asc' | 'desc' | null;
+import { useSortable } from '@/hooks/use-sortable';
 
 const InvestimentoList: React.FC = () => {
   const { investimentos, excluirInvestimento, clientes } = useAppContext();
@@ -24,9 +21,8 @@ const InvestimentoList: React.FC = () => {
   const [filtroTipo, setFiltroTipo] = useState<string | null>(null);
   const [filtroModalidade, setFiltroModalidade] = useState<string | null>(null);
   
-  // Add sorting state
-  const [sortField, setSortField] = useState<SortField>(null);
-  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
+  // Use our new custom hook for sorting
+  const { sortField, sortDirection, handleSort, sortData } = useSortable();
   
   const [detalhesVisible, setDetalhesVisible] = useState(false);
   const [investimentoSelecionado, setInvestimentoSelecionado] = useState<InvestimentoComCalculo | null>(null);
@@ -65,29 +61,9 @@ const InvestimentoList: React.FC = () => {
     }
   };
   
-  const handleImportData = (data: any[]) => {
+  const handleImportData = () => {
     // Após a importação bem-sucedida, atualize a lista
     refreshData();
-  };
-  
-  // Handle sorting logic
-  const handleSort = (field: string) => {
-    // If clicking the same field, toggle sort direction or reset
-    if (field === sortField) {
-      if (sortDirection === 'asc') {
-        setSortDirection('desc');
-      } else if (sortDirection === 'desc') {
-        // Reset sorting
-        setSortField(null);
-        setSortDirection(null);
-      } else {
-        setSortDirection('asc');
-      }
-    } else {
-      // New field selected, start with ascending sort
-      setSortField(field);
-      setSortDirection('asc');
-    }
   };
   
   // Filter investments
@@ -101,64 +77,8 @@ const InvestimentoList: React.FC = () => {
     return matchCliente && matchTipo && matchModalidade;
   });
   
-  // Sort investments
-  if (sortField && sortDirection) {
-    investimentosFiltrados = [...investimentosFiltrados].sort((a, b) => {
-      // Helper function to safely get comparable values
-      const getValue = (obj: any, path: string) => {
-        const parts = path.split('.');
-        let value = obj;
-        
-        for (const part of parts) {
-          if (value === null || value === undefined) return '';
-          value = value[part];
-        }
-        
-        return value;
-      };
-      
-      let valueA = getValue(a, sortField);
-      let valueB = getValue(b, sortField);
-      
-      // Special handling for date fields (DD/MM/YY or DD/MM/YYYY format)
-      if (sortField === 'dataAporte' || sortField === 'dataVencimento') {
-        const dateA = parseDateString(valueA);
-        const dateB = parseDateString(valueB);
-        
-        if (dateA && dateB) {
-          return sortDirection === 'asc' 
-            ? dateA.getTime() - dateB.getTime() 
-            : dateB.getTime() - dateA.getTime();
-        }
-      }
-      
-      // Handle numeric values
-      if (typeof valueA === 'number' && typeof valueB === 'number') {
-        return sortDirection === 'asc' ? valueA - valueB : valueB - valueA;
-      }
-      
-      // Handle string values that might be numbers
-      if (typeof valueA === 'string' && typeof valueB === 'string') {
-        // Try to parse as numbers for currency values
-        const numA = parseFloat(valueA.replace(/[^0-9,-]/g, '').replace(',', '.'));
-        const numB = parseFloat(valueB.replace(/[^0-9,-]/g, '').replace(',', '.'));
-        
-        if (!isNaN(numA) && !isNaN(numB)) {
-          return sortDirection === 'asc' ? numA - numB : numB - numA;
-        }
-        
-        // Case-insensitive string comparison
-        return sortDirection === 'asc' 
-          ? valueA.localeCompare(valueB, 'pt-BR') 
-          : valueB.localeCompare(valueA, 'pt-BR');
-      }
-      
-      // Fallback comparison
-      if (valueA === valueB) return 0;
-      if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
-      return sortDirection === 'asc' ? 1 : -1;
-    });
-  }
+  // Sort investments using our custom hook
+  investimentosFiltrados = sortData(investimentosFiltrados);
   
   const exibirDetalhes = (investimento: InvestimentoComCalculo) => {
     setInvestimentoSelecionado(investimento);
@@ -166,31 +86,11 @@ const InvestimentoList: React.FC = () => {
   };
   
   if (isLoadingData) {
-    return (
-      <Card className="animate-fade-in">
-        <CardHeader>
-          <CardTitle>Investimentos Cadastrados</CardTitle>
-          <CardDescription>Carregando dados...</CardDescription>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="space-y-4">
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-[400px] w-full" />
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <InvestimentoLoading />;
   }
   
   if (!Array.isArray(investimentos) || investimentos.length === 0) {
-    return (
-      <Card className="animate-fade-in">
-        <CardContent className="p-6 text-center">
-          <p className="text-gray-500">Nenhum investimento cadastrado</p>
-        </CardContent>
-      </Card>
-    );
+    return <InvestimentoEmpty />;
   }
   
   return (

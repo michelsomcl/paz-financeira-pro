@@ -8,8 +8,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const ClientesPage: React.FC = () => {
-  const { loadingClientes } = useAppContext();
+  const { investimentos, clientes } = useAppContext();
   const [activeTab, setActiveTab] = useState<'form' | 'list'>('list');
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <Layout 
@@ -40,7 +41,7 @@ const ClientesPage: React.FC = () => {
         ) : (
           <div>
             <h2 className="text-xl font-semibold mb-4">Clientes Cadastrados</h2>
-            {loadingClientes ? (
+            {isLoading ? (
               <Card>
                 <CardContent className="p-6">
                   <div className="space-y-2">
