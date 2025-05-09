@@ -10,6 +10,7 @@ import InvestimentoDetalhes from './InvestimentoDetalhes';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { toast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
+import { parseDateString } from '@/utils/formatters';
 
 // Define sorting types
 type SortField = string | null;
@@ -113,24 +114,49 @@ const InvestimentoList: React.FC = () => {
           value = value[part];
         }
         
-        // Convert to number if possible for numerical sorting
-        if (typeof value === 'number') return value;
-        if (typeof value === 'string') {
-          const num = parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.'));
-          if (!isNaN(num)) return num;
-          return value.toLowerCase(); // Case-insensitive string comparison
-        }
-        
-        return value || '';
+        return value;
       };
       
       let valueA = getValue(a, sortField);
       let valueB = getValue(b, sortField);
       
-      if (valueA === valueB) return 0;
+      // Special handling for date fields (DD/MM/YY or DD/MM/YYYY format)
+      if (sortField === 'dataAporte' || sortField === 'dataVencimento') {
+        const dateA = parseDateString(valueA);
+        const dateB = parseDateString(valueB);
+        
+        if (dateA && dateB) {
+          return sortDirection === 'asc' 
+            ? dateA.getTime() - dateB.getTime() 
+            : dateB.getTime() - dateA.getTime();
+        }
+      }
       
-      const comparison = valueA < valueB ? -1 : 1;
-      return sortDirection === 'asc' ? comparison : -comparison;
+      // Handle numeric values
+      if (typeof valueA === 'number' && typeof valueB === 'number') {
+        return sortDirection === 'asc' ? valueA - valueB : valueB - valueA;
+      }
+      
+      // Handle string values that might be numbers
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        // Try to parse as numbers for currency values
+        const numA = parseFloat(valueA.replace(/[^0-9,-]/g, '').replace(',', '.'));
+        const numB = parseFloat(valueB.replace(/[^0-9,-]/g, '').replace(',', '.'));
+        
+        if (!isNaN(numA) && !isNaN(numB)) {
+          return sortDirection === 'asc' ? numA - numB : numB - numA;
+        }
+        
+        // Case-insensitive string comparison
+        return sortDirection === 'asc' 
+          ? valueA.localeCompare(valueB, 'pt-BR') 
+          : valueB.localeCompare(valueA, 'pt-BR');
+      }
+      
+      // Fallback comparison
+      if (valueA === valueB) return 0;
+      if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
+      return sortDirection === 'asc' ? 1 : -1;
     });
   }
   
