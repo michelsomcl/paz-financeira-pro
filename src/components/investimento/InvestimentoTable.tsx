@@ -38,7 +38,7 @@ const InvestimentoTable: React.FC<InvestimentoTableProps> = ({
   return (
     <div className="w-full overflow-hidden">
       <ScrollArea className="w-full">
-        <div className="min-w-[1300px]"> {/* largura mínima fixa para evitar quebra */}
+        <div className="min-w-[1400px]"> {/* aumentando a largura mínima para acomodar todas as colunas */}
           <Table>
             <InvestimentoTableHeader 
               sortField={sortField}

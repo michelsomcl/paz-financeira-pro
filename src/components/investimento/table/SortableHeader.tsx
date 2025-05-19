@@ -29,7 +29,7 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
 
   return (
     <TableHead 
-      className="cursor-pointer hover:bg-gray-100 transition-colors"
+      className="cursor-pointer hover:bg-gray-100 transition-colors whitespace-nowrap"
       onClick={() => onSort(field)}
     >
       <div className="flex items-center">

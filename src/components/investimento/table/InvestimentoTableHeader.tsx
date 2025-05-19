@@ -24,14 +24,14 @@ const InvestimentoTableHeader: React.FC<InvestimentoTableHeaderProps> = ({
         <SortableHeader field="tipoInvestimento" sortField={sortField} sortDirection={sortDirection} onSort={onSort}>Tipo</SortableHeader>
         <SortableHeader field="modalidade" sortField={sortField} sortDirection={sortDirection} onSort={onSort}>Modalidade</SortableHeader>
         <SortableHeader field="titulo" sortField={sortField} sortDirection={sortDirection} onSort={onSort}>Título</SortableHeader>
-        <TableHead>Taxa Utilizada</TableHead>
+        <TableHead className="whitespace-nowrap">Taxa Utilizada</TableHead>
         <SortableHeader field="calculo.diasCorridos" sortField={sortField} sortDirection={sortDirection} onSort={onSort}>Dias Corridos</SortableHeader>
         <SortableHeader field="calculo.diasUteis" sortField={sortField} sortDirection={sortDirection} onSort={onSort}>Dias Úteis</SortableHeader>
         <SortableHeader field="calculo.rendimentoBruto" sortField={sortField} sortDirection={sortDirection} onSort={onSort}>Rent. Bruta</SortableHeader>
         <SortableHeader field="calculo.valorIR" sortField={sortField} sortDirection={sortDirection} onSort={onSort}>IR</SortableHeader>
         <SortableHeader field="calculo.valorIOF" sortField={sortField} sortDirection={sortDirection} onSort={onSort}>IOF</SortableHeader>
         <SortableHeader field="calculo.rendimentoLiquido" sortField={sortField} sortDirection={sortDirection} onSort={onSort}>Rent. Líquida</SortableHeader>
-        <TableHead className="text-right">Ações</TableHead>
+        <TableHead className="text-right whitespace-nowrap">Ações</TableHead>
       </TableRow>
     </TableHeader>
   );

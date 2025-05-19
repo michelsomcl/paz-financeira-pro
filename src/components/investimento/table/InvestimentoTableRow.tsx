@@ -36,7 +36,6 @@ const InvestimentoTableRow: React.FC<InvestimentoTableRowProps> = ({
   const valorIOF = Number(calculo.valorIOF) || 0;
   const diasCorridos = Number(calculo.diasCorridos) || 0;
   const diasUteis = Number(calculo.diasUteis) || 0;
-  const patrimonioLiquido = valorAporte + rendimentoLiquido;
   
   return (
     <TableRow className="whitespace-nowrap">
@@ -55,8 +54,7 @@ const InvestimentoTableRow: React.FC<InvestimentoTableRowProps> = ({
       <TableCell className="whitespace-nowrap">{formatCurrency(rendimentoBruto)}</TableCell>
       <TableCell className="whitespace-nowrap">{formatCurrency(valorIR)}</TableCell>
       <TableCell className="whitespace-nowrap">{formatCurrency(valorIOF)}</TableCell>
-      <TableCell className="font-medium whitespace-nowrap">{formatCurrency(rendimentoLiquido)}</TableCell>
-      <TableCell className="font-medium whitespace-nowrap">{formatCurrency(patrimonioLiquido)}</TableCell>
+      <TableCell className="whitespace-nowrap">{formatCurrency(rendimentoLiquido)}</TableCell>
       <TableCell className="text-right whitespace-nowrap">
         <TableActions 
           investimento={investimento}
