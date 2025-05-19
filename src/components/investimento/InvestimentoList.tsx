@@ -7,11 +7,9 @@ import InvestimentoFilters from './InvestimentoFilters';
 import InvestimentoTable from './InvestimentoTable';
 import InvestimentoExport from './InvestimentoExport';
 import InvestimentoDetalhes from './InvestimentoDetalhes';
-import InvestimentoLoading from './InvestimentoLoading';
-import InvestimentoEmpty from './InvestimentoEmpty';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { toast } from '@/hooks/use-toast';
-import { useSortable } from '@/hooks/use-sortable';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const InvestimentoList: React.FC = () => {
   const { investimentos, excluirInvestimento, clientes } = useAppContext();
@@ -20,9 +18,6 @@ const InvestimentoList: React.FC = () => {
   const [filtroCliente, setFiltroCliente] = useState<string | null>(null);
   const [filtroTipo, setFiltroTipo] = useState<string | null>(null);
   const [filtroModalidade, setFiltroModalidade] = useState<string | null>(null);
-  
-  // Use our new custom hook for sorting
-  const { sortField, sortDirection, handleSort, sortData } = useSortable();
   
   const [detalhesVisible, setDetalhesVisible] = useState(false);
   const [investimentoSelecionado, setInvestimentoSelecionado] = useState<InvestimentoComCalculo | null>(null);
@@ -61,13 +56,12 @@ const InvestimentoList: React.FC = () => {
     }
   };
   
-  const handleImportData = () => {
+  const handleImportData = (data: any[]) => {
     // Após a importação bem-sucedida, atualize a lista
     refreshData();
   };
   
-  // Filter investments
-  let investimentosFiltrados = investimentos.filter(inv => {
+  const investimentosFiltrados = investimentos.filter(inv => {
     // Ensure inv is valid before filtering
     if (!inv) return false;
     
@@ -77,20 +71,37 @@ const InvestimentoList: React.FC = () => {
     return matchCliente && matchTipo && matchModalidade;
   });
   
-  // Sort investments using our custom hook
-  investimentosFiltrados = sortData(investimentosFiltrados);
-  
   const exibirDetalhes = (investimento: InvestimentoComCalculo) => {
     setInvestimentoSelecionado(investimento);
     setDetalhesVisible(true);
   };
   
   if (isLoadingData) {
-    return <InvestimentoLoading />;
+    return (
+      <Card className="animate-fade-in">
+        <CardHeader>
+          <CardTitle>Investimentos Cadastrados</CardTitle>
+          <CardDescription>Carregando dados...</CardDescription>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-[400px] w-full" />
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
   
   if (!Array.isArray(investimentos) || investimentos.length === 0) {
-    return <InvestimentoEmpty />;
+    return (
+      <Card className="animate-fade-in">
+        <CardContent className="p-6 text-center">
+          <p className="text-gray-500">Nenhum investimento cadastrado</p>
+        </CardContent>
+      </Card>
+    );
   }
   
   return (
@@ -127,9 +138,6 @@ const InvestimentoList: React.FC = () => {
               investimentos={investimentosFiltrados}
               onDelete={excluirInvestimento}
               onShowDetails={exibirDetalhes}
-              sortField={sortField}
-              sortDirection={sortDirection}
-              onSort={handleSort}
             />
           </div>
         </CardContent>
