@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useAppContext } from '@/contexts/AppContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
@@ -7,6 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from '@/components/ui/textarea';
 import { Trash2, Pencil } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatters';
+import { useSortable } from '@/hooks/useSortable';
+import SortableHeader from '@/components/shared/SortableHeader';
 
 interface NotesState {
   [key: string]: string;
@@ -14,8 +17,15 @@ interface NotesState {
 
 const ClienteList: React.FC = () => {
   const { clientes, excluirCliente, investimentos } = useAppContext();
-  const [notes, setNotes] = useState<NotesState>({}); 
+  const [notes, setNotes] = useState<NotesState>({});
   const [openDialogId, setOpenDialogId] = useState<string | null>(null);
+  
+  const { data: clientesOrdenados, requestSort, sortConfig } = useSortable(clientes);
+  
+  // Atualizar os dados quando clientes mudarem
+  useEffect(() => {
+    // Não atualizamos diretamente pois o useSortable já está observando as mudanças
+  }, [clientes]);
 
   const handleNotesChange = (clienteId: string, value: string) => {
     setNotes(prev => ({
@@ -55,19 +65,55 @@ const ClienteList: React.FC = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead>Plano Contratado</TableHead>
-                <TableHead>Vigência</TableHead>
-                <TableHead>Início do Plano</TableHead>
-                <TableHead>Vencimento</TableHead>
-                <TableHead>Contribuição Inicial</TableHead>
+                <SortableHeader 
+                  label="Nome" 
+                  sortKey="nome" 
+                  currentSortKey={sortConfig?.key}
+                  sortDirection={sortConfig?.direction}
+                  onSort={requestSort} 
+                />
+                <SortableHeader 
+                  label="Plano Contratado" 
+                  sortKey="planoContratado" 
+                  currentSortKey={sortConfig?.key}
+                  sortDirection={sortConfig?.direction}
+                  onSort={requestSort} 
+                />
+                <SortableHeader 
+                  label="Vigência" 
+                  sortKey="vigenciaPlano" 
+                  currentSortKey={sortConfig?.key}
+                  sortDirection={sortConfig?.direction}
+                  onSort={requestSort} 
+                />
+                <SortableHeader 
+                  label="Início do Plano" 
+                  sortKey="inicioPlano" 
+                  currentSortKey={sortConfig?.key}
+                  sortDirection={sortConfig?.direction}
+                  onSort={requestSort} 
+                />
+                <SortableHeader 
+                  label="Vencimento" 
+                  sortKey="vencimento" 
+                  currentSortKey={sortConfig?.key}
+                  sortDirection={sortConfig?.direction}
+                  onSort={requestSort} 
+                />
+                <SortableHeader 
+                  label="Contribuição Inicial" 
+                  sortKey="contribuicao" 
+                  currentSortKey={sortConfig?.key}
+                  sortDirection={sortConfig?.direction}
+                  onSort={requestSort} 
+                />
                 <TableHead>Valor Total Aplicado</TableHead>
                 <TableHead>Patrimônio Projetado</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {clientes.map((cliente) => {
+              {clientesOrdenados.map((cliente) => {
                 const { valorAplicado, patrimonioProjetado } = calcularValoresConsolidados(cliente.id);
                 return (
                   <TableRow key={cliente.id} className="whitespace-nowrap">

@@ -18,7 +18,9 @@ const ClientesPage: React.FC = () => {
         
         <div>
           <h2 className="text-xl font-semibold mb-4">Clientes Cadastrados</h2>
-          <ClienteList />
+          <div className="overflow-hidden">
+            <ClienteList />
+          </div>
         </div>
       </div>
     </Layout>

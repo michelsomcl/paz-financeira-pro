@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -8,6 +8,8 @@ import { formatCurrency } from '@/utils/formatters';
 import { formatarDescricaoTaxa } from '@/utils/calculadora';
 import { InvestimentoComCalculo } from '@/types';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useSortable } from '@/hooks/useSortable';
+import SortableHeader from '@/components/shared/SortableHeader';
 
 interface InvestimentoTableProps {
   investimentos: InvestimentoComCalculo[];
@@ -21,6 +23,12 @@ const InvestimentoTable: React.FC<InvestimentoTableProps> = ({
   onShowDetails,
 }) => {
   const isMobile = useIsMobile();
+  const { data: investimentosOrdenados, requestSort, sortConfig, updateData } = useSortable(investimentos);
+
+  // Atualizar os dados quando os investimentos mudarem
+  useEffect(() => {
+    updateData(investimentos);
+  }, [investimentos]);
 
   // Check if investimentos is valid
   if (!investimentos || !Array.isArray(investimentos) || investimentos.length === 0) {
@@ -37,26 +45,104 @@ const InvestimentoTable: React.FC<InvestimentoTableProps> = ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Cliente</TableHead>
-              <TableHead>Valor do Aporte</TableHead>
-              <TableHead>Data do Aporte</TableHead>
-              <TableHead>Data do Vencimento</TableHead>
-              <TableHead>Tipo</TableHead>
-              <TableHead>Modalidade</TableHead>
-              <TableHead>Título</TableHead>
+              <SortableHeader 
+                label="Cliente" 
+                sortKey="clienteNome" 
+                currentSortKey={sortConfig?.key}
+                sortDirection={sortConfig?.direction}
+                onSort={requestSort} 
+              />
+              <SortableHeader 
+                label="Valor do Aporte" 
+                sortKey="valorAporte" 
+                currentSortKey={sortConfig?.key}
+                sortDirection={sortConfig?.direction}
+                onSort={requestSort} 
+              />
+              <SortableHeader 
+                label="Data do Aporte" 
+                sortKey="dataAporte" 
+                currentSortKey={sortConfig?.key}
+                sortDirection={sortConfig?.direction}
+                onSort={requestSort} 
+              />
+              <SortableHeader 
+                label="Data do Vencimento" 
+                sortKey="dataVencimento" 
+                currentSortKey={sortConfig?.key}
+                sortDirection={sortConfig?.direction}
+                onSort={requestSort} 
+              />
+              <SortableHeader 
+                label="Tipo" 
+                sortKey="tipoInvestimento" 
+                currentSortKey={sortConfig?.key}
+                sortDirection={sortConfig?.direction}
+                onSort={requestSort} 
+              />
+              <SortableHeader 
+                label="Modalidade" 
+                sortKey="modalidade" 
+                currentSortKey={sortConfig?.key}
+                sortDirection={sortConfig?.direction}
+                onSort={requestSort} 
+              />
+              <SortableHeader 
+                label="Título" 
+                sortKey="titulo" 
+                currentSortKey={sortConfig?.key}
+                sortDirection={sortConfig?.direction}
+                onSort={requestSort} 
+              />
               <TableHead>Taxa Utilizada</TableHead>
-              <TableHead>Dias Corridos</TableHead>
-              <TableHead>Dias Úteis</TableHead>
-              <TableHead>Rent. Bruta</TableHead>
-              <TableHead>IR</TableHead>
-              <TableHead>IOF</TableHead>
-              <TableHead>Rent. Líquida</TableHead>
+              <SortableHeader 
+                label="Dias Corridos" 
+                sortKey="calculo.diasCorridos" 
+                currentSortKey={sortConfig?.key}
+                sortDirection={sortConfig?.direction}
+                onSort={requestSort} 
+              />
+              <SortableHeader 
+                label="Dias Úteis" 
+                sortKey="calculo.diasUteis" 
+                currentSortKey={sortConfig?.key}
+                sortDirection={sortConfig?.direction}
+                onSort={requestSort} 
+              />
+              <SortableHeader 
+                label="Rent. Bruta" 
+                sortKey="calculo.rendimentoBruto" 
+                currentSortKey={sortConfig?.key}
+                sortDirection={sortConfig?.direction}
+                onSort={requestSort} 
+              />
+              <SortableHeader 
+                label="IR" 
+                sortKey="calculo.valorIR" 
+                currentSortKey={sortConfig?.key}
+                sortDirection={sortConfig?.direction}
+                onSort={requestSort} 
+              />
+              <SortableHeader 
+                label="IOF" 
+                sortKey="calculo.valorIOF" 
+                currentSortKey={sortConfig?.key}
+                sortDirection={sortConfig?.direction}
+                onSort={requestSort} 
+              />
+              <SortableHeader 
+                label="Rent. Líquida" 
+                sortKey="calculo.rendimentoLiquido" 
+                currentSortKey={sortConfig?.key}
+                sortDirection={sortConfig?.direction}
+                onSort={requestSort} 
+              />
               <TableHead>Patrimônio Líquido</TableHead>
               <TableHead className="text-right">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {investimentos.map((investimento) => {
+            {investimentosOrdenados.map((investimento) => {
               // Skip rendering if investimento is invalid
               if (!investimento || !investimento.id) {
                 console.error("Invalid investimento found:", investimento);
