@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
@@ -24,6 +23,11 @@ const InvestimentoFilters: React.FC<InvestimentoFiltersProps> = ({
   onTipoChange,
   onModalidadeChange,
 }) => {
+  // Ordenar os clientes alfabeticamente por nome
+  const clientesOrdenados = [...clientes].sort((a, b) => 
+    a.nome.localeCompare(b.nome)
+  );
+
   return (
     <Card className="mb-6 animate-fade-in">
       <CardHeader>
@@ -43,7 +47,7 @@ const InvestimentoFilters: React.FC<InvestimentoFiltersProps> = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos">Todos</SelectItem>
-                {clientes.map((cliente) => (
+                {clientesOrdenados.map((cliente) => (
                   <SelectItem key={cliente.id} value={cliente.id}>
                     {cliente.nome}
                   </SelectItem>
