@@ -34,8 +34,15 @@ export function useSortable<T>(initialData: T[], initialSortConfig: SortConfig |
       setData([...initialData]);
     } else {
       const sortedData = [...data].sort((a: any, b: any) => {
-        const aValue = a[key];
-        const bValue = b[key];
+        // Navegar pela estrutura aninhada se a chave contiver pontos (ex: "calculo.diasCorridos")
+        const keys = key.split('.');
+        let aValue = a;
+        let bValue = b;
+        
+        for (const k of keys) {
+          aValue = aValue && typeof aValue === 'object' ? aValue[k] : null;
+          bValue = bValue && typeof bValue === 'object' ? bValue[k] : null;
+        }
 
         if (aValue === null || aValue === undefined) return direction === 'asc' ? 1 : -1;
         if (bValue === null || bValue === undefined) return direction === 'asc' ? -1 : 1;
@@ -51,11 +58,17 @@ export function useSortable<T>(initialData: T[], initialSortConfig: SortConfig |
         const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
         if (typeof aValue === 'string' && typeof bValue === 'string' &&
             dateRegex.test(aValue) && dateRegex.test(bValue)) {
-          const [dayA, monthA, yearA] = aValue.split('/').map(Number);
-          const [dayB, monthB, yearB] = bValue.split('/').map(Number);
-          const dateA = new Date(yearA, monthA - 1, dayA);
-          const dateB = new Date(yearB, monthB - 1, dayB);
-          return direction === 'asc' ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
+          // Converter DD/MM/YYYY para YYYY-MM-DD para comparação correta
+          const [dayA, monthA, yearA] = aValue.split('/');
+          const [dayB, monthB, yearB] = bValue.split('/');
+          
+          // Criar objetos Date com valores UTC para evitar problemas de fuso horário
+          const dateA = new Date(Date.UTC(parseInt(yearA), parseInt(monthA) - 1, parseInt(dayA)));
+          const dateB = new Date(Date.UTC(parseInt(yearB), parseInt(monthB) - 1, parseInt(dayB)));
+          
+          return direction === 'asc' 
+            ? dateA.getTime() - dateB.getTime()
+            : dateB.getTime() - dateA.getTime();
         }
 
         // Comparação padrão de strings
